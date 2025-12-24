@@ -46,14 +46,42 @@ const Hero = () => {
   const [activeSection, setActiveSection] = React.useState("hero");
   const [showModal, setShowModal] = React.useState(false);
   const [menuOpen, setMenuOpen] = React.useState(false);
+  const [burgerDark, setBurgerDark] = React.useState(false);
+  const [showScrollTop, setShowScrollTop] = React.useState(false);
 
   React.useEffect(() => {
     let lastScroll = 0;
     const handleScroll = () => {
       const current = window.scrollY;
-      if (current < lastScroll && current > 120) setIsSticky(true);
-      else setIsSticky(false);
+      const heroInner = document.querySelector(".hero-inner");
+
+      if (current < lastScroll && current > 120) {
+        setIsSticky(true);
+        if (heroInner) heroInner.classList.add("header-sticky");
+      } else {
+        setIsSticky(false);
+        if (heroInner) heroInner.classList.remove("header-sticky");
+      }
       lastScroll = current;
+
+      // Show scroll to top button after scrolling 400px
+      setShowScrollTop(current > 400);
+
+      // Check if in white section for burger color
+      const whiteSections = ["about", "services", "portfolio", "faq"];
+      const aboutEl = document.getElementById("about");
+      const faqEl = document.getElementById("faq");
+
+      if (aboutEl && faqEl) {
+        const aboutTop = aboutEl.offsetTop;
+        const faqBottom = faqEl.offsetTop + faqEl.offsetHeight;
+
+        if (current >= aboutTop - 100 && current <= faqBottom) {
+          setBurgerDark(true);
+        } else {
+          setBurgerDark(false);
+        }
+      }
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -83,6 +111,10 @@ const Hero = () => {
 
   const scrollToSection = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   // Form state and handlers
@@ -185,7 +217,7 @@ const Hero = () => {
       <section
         className="hero"
         id="hero"
-        style={{ fontFamily: "'Montserrat Alternates', sans-serif" }}
+        style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
       >
         <div className="hero-overlay" />
         <img src="/bg.jpg" className="hero-bg" alt="" />
@@ -219,7 +251,7 @@ const Hero = () => {
               </a>
             </div>
             
-            <div className="burger" onClick={() => setMenuOpen(!menuOpen)}>
+            <div className={`burger ${burgerDark ? "dark" : ""}`} onClick={() => setMenuOpen(!menuOpen)}>
               <span></span>
               <span></span>
               <span></span>
@@ -618,6 +650,28 @@ const Hero = () => {
           
         </div>
       </section>
+      {/* FIXED WHATSAPP BUTTON */}
+      <a
+        href="https://wa.me/992000005477"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="whatsapp-float"
+        aria-label="Написать в WhatsApp"
+      >
+        <img src="/wa.svg" alt="WhatsApp" />
+      </a>
+
+      {/* SCROLL TO TOP BUTTON */}
+      <button
+        className={`scroll-to-top ${showScrollTop ? "visible" : ""}`}
+        onClick={scrollToTop}
+        aria-label="Вернуться наверх"
+      >
+        <svg viewBox="0 0 24 24">
+          <path d="M12 19V5M5 12l7-7 7 7" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </button>
+
       {/* FOOTER */}
       <footer className="site-footer">
         <div className="footer-top">
