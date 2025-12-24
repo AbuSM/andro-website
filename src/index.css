@@ -1,0 +1,304 @@
+
+/* =========================
+   ABOUT — MOBILE FIX (REAL)
+========================= */
+
+@media (max-width: 768px) {
+
+  .about {
+    padding: 40px 0 !important;
+    width: 100%;
+    overflow-x: hidden !important;
+  }
+
+  /* Матн ва унвон мобилӣ */
+  .about-container {
+    width: 100%;
+    padding: 0 20px !important;
+    text-align: center !important;
+  }
+
+  .about-text {
+    font-size: 15px !important;
+    max-width: 100% !important;
+    line-height: 1.55;
+    padding: 0 10px;
+  }
+
+  /* ГЛАВНАЯ — ИН ИСТ ИСЛОҲИ АСОСӢ */
+  .about-icons {
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 0 auto !important;
+    gap: 40px !important;
+
+    overflow: hidden !important;
+  }
+
+  .about-item {
+    width: 100% !important;
+    max-width: 320px !important;
+
+    margin: 0 auto !important;
+    text-align: center !important;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .about-icon {
+    width: 72px !important;
+    height: 72px !important;
+    margin-bottom: 14px !important;
+  }
+
+  .about-item-title {
+    font-size: 18px !important;
+    margin-bottom: 6px;
+  }
+
+  .about-item-text {
+    font-size: 15px !important;
+    max-width: 280px !important;
+  }
+
+  /* Фото — мобил */
+  .about-photo img {
+    width: 100% !important;
+    border-radius: 18px !important;
+    margin-top: 25px !important;
+  }
+}
+
+/* ======================================
+      SERVICES — MOBILE (≤ 768px)
+====================================== */
+@media (max-width: 768px) {
+
+  .services {
+    padding: 50px 0 70px;
+    background: #ffffff;
+  }
+
+  .services-container {
+    width: 100%;
+    padding: 0 16px;
+    text-align: left;
+  }
+
+  .services-title {
+    text-align: center;
+    font-size: 22px;
+    padding: 8px 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+
+  .services-subtitle {
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.55;
+    max-width: 100%;
+    margin: 0 auto 28px;
+  }
+
+  /* MAIN MOBILE BLOCK STRUCTURE */
+  .service-mobile-block {
+    width: 100%;
+    background: #F7F8FA;
+    border-radius: 18px;
+    padding: 20px;
+    margin-bottom: 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .service-mobile-text h4 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #1d1d1d;
+  }
+
+  .service-mobile-text p {
+    font-size: 14px;
+    line-height: 1.55;
+    color: #444;
+  }
+
+  .service-mobile-img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 16px;
+  }
+}
+
+/* ===============================
+   GLOBAL MOBILE IMPROVEMENTS
+=============================== */
+@media (max-width: 768px) {
+
+  /* GLOBAL PADDING + SAFE AREA */
+  body, html {
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  section {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  /* TIGHTEN GLOBAL TEXT */
+  h1, h2, h3, h4 {
+    line-height: 1.25;
+  }
+
+  p {
+    line-height: 1.55;
+  }
+
+  /* HERO — CLEAN & CENTERED */
+  .hero-inner {
+    padding: 18px 16px 42px !important;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .hero-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* ABOUT — CLEAN SPACING */
+  .about {
+    padding: 40px 0 !important;
+  }
+
+  .about-text {
+    margin-bottom: 30px !important;
+  }
+
+  .about-photo img {
+    margin-top: 20px !important;
+    border-radius: 20px;
+  }
+
+  /* SERVICES — EVEN CLEANER LOOK */
+  .service-mobile-block {
+    padding: 18px !important;
+    border-radius: 20px !important;
+    background: #F7F8FC;
+  }
+
+  .service-mobile-text h4 {
+    font-size: 17px !important;
+  }
+
+  .service-mobile-img {
+    height: 200px !important;
+    border-radius: 14px !important;
+  }
+
+  /* PORTFOLIO — FIXED MOBILE SPACING */
+  .portfolio {
+    padding: 60px 0 80px !important;
+  }
+
+  .portfolio-track {
+    gap: 16px !important;
+  }
+
+  .portfolio-card {
+    flex: 0 0 240px !important;
+    height: 180px !important;
+  }
+
+  /* CONTACTS — MOBILE FIX */
+  .contacts-inner {
+    padding: 80px 16px 50px !important;
+  }
+
+  .contacts-form-card {
+    width: 100% !important;
+    height: auto !important;
+    padding: 28px 20px !important;
+  }
+
+  .contacts-subtitle {
+    font-size: 16px !important;
+    margin-bottom: 30px !important;
+  }
+
+  .contacts-main {
+    flex-direction: column;
+    gap: 26px;
+  }
+
+  .contacts-map {
+    width: 100% !important;
+    height: 260px !important;
+    border-radius: 20px !important;
+  }
+
+  /* FAQ — MOBILE CLEANUP */
+  .faq {
+    padding: 60px 0 !important;
+  }
+
+  .faq-title {
+    font-size: 26px !important;
+  }
+
+  .faq-subtitle {
+    font-size: 15px !important;
+    margin-bottom: 40px !important;
+  }
+
+  .faq-item {
+    padding: 24px 24px 24px 38px !important;
+    border-radius: 22px !important;
+  }
+
+  .faq-question span {
+    font-size: 18px !important;
+  }
+
+  .faq-toggle {
+    width: 50px !important;
+    height: 50px !important;
+    font-size: 24px !important;
+  }
+
+  /* FOOTER — PERFECT MOBILE */
+  .site-footer {
+    padding: 36px 18px !important;
+    text-align: center;
+  }
+
+  .footer-top {
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .footer-nav ul {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    gap: 10px;
+  }
+}

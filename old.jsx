@@ -1,0 +1,647 @@
+import React from "react";
+import "./App.css";
+
+const Hero = () => {
+  const photos = [
+    "/photo/1.png",
+    "/photo/2.png",
+    "/photo/3.png",
+    "/photo/4.png",
+
+  ];
+
+  const [currentSlide, setCurrentSlide] = React.useState(photos[0]);
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => {
+        const index = photos.indexOf(prev);
+        const nextIndex = (index + 1) % photos.length;
+        return photos[nextIndex];
+      });
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  React.useEffect(() => {
+    const track = document.querySelector(".portfolio-track");
+    if (!track) return;
+
+    let position = 0;
+    const speed = 0.5; // slider speed
+
+    const interval = setInterval(() => {
+      position -= speed;
+      if (Math.abs(position) >= track.scrollWidth / 2) {
+        position = 0;
+      }
+      track.style.transform = `translateX(${position}px)`;
+    }, 16);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const [isSticky, setIsSticky] = React.useState(false);
+  const [activeSection, setActiveSection] = React.useState("hero");
+  const [showModal, setShowModal] = React.useState(false);
+  const [menuOpen, setMenuOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    let lastScroll = 0;
+    const handleScroll = () => {
+      const current = window.scrollY;
+      if (current < lastScroll && current > 120) setIsSticky(true);
+      else setIsSticky(false);
+      lastScroll = current;
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  React.useEffect(() => {
+    const sections = ["hero", "about", "services", "portfolio", "contacts", "faq"];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      {
+        threshold: [0.1, 0.3, 0.5],
+        rootMargin: "-30% 0px -50% 0px",
+      }
+    );
+    sections.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, []);
+
+  const scrollToSection = (id) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  // Form state and handlers
+  const [fullName, setFullName] = React.useState("");
+  const [phone, setPhone] = React.useState("");
+
+  const handlePhoneChange = (e) => {
+    let value = e.target.value.replace(/\D/g, "");
+
+    // Remove country code if typed manually
+    if (value.startsWith("992")) value = value.slice(3);
+
+    // Limit digits
+    value = value.slice(0, 9);
+
+    const formatted =
+      "+992 " +
+      value.replace(/(\d{3})(\d{3})(\d{0,3})/, (_, p1, p2, p3) =>
+        p3 ? `${p1} ${p2} ${p3}` : p2 ? `${p1} ${p2}` : p1
+      );
+
+    setPhone(formatted);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const botToken = "7674939275:AAGtBAn0gJa3bSQGAgdsaoCJsz5RvyMZvak";
+    const chatId = "-1003382168225";
+
+    const message = `
+📩 Новая заявка с сайта ANDRO
+———————————————
+👤 ФИО: ${fullName}
+📱 Телефон: ${phone}
+✉️ Email: ${document.querySelector('input[type="email"]').value || "—"}
+💬 Сообщение: ${document.querySelector('textarea').value || "—"}
+    `;
+
+    fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: message,
+        parse_mode: "HTML"
+      })
+    });
+
+    const onlyDigits = phone.replace(/\D/g, "");
+    if (fullName.trim() === "" || onlyDigits.length !== 12) {
+      alert("Пожалуйста, заполните ФИО и корректный номер телефона.");
+      return;
+    }
+
+    setShowModal(true);
+  };
+
+  const portfolioPhotos = [
+    "/photo/1.png",
+    "/photo/2.png",
+    "/photo/3.png",
+    "/photo/4.png",
+    "/photo/1.png",
+    "/photo/2.png",
+    "/photo/1.png",
+    "/photo/2.png",
+   
+  ];
+
+  const faqData = [
+    {
+      q: "Как долго служат солнечные панели?",
+      a: "Современные панели рассчитаны на срок службы 20–25 лет, сохраняют эффективность и нуждаются только в минимальном обслуживании."
+    },
+    {
+      q: "Работают ли панели зимой и в пасмурную погоду?",
+      a: "Да. Они вырабатывают энергию даже при рассеянном свете — зимой производительность ниже, но система остаётся стабильной и полезной."
+    },
+    {
+      q: "Через сколько окупается установка?",
+      a: "В среднем 3–5 лет, в зависимости от мощности, места установки и потребления энергии. После этого вы экономите практически бесплатно."
+    },
+    {
+      q: "Нужны ли разрешения и бумаги?",
+      a: "Большинство домашних установок не требуют сложных согласований. При необходимости мы берём оформление документов на себя."
+    },
+    {
+      q: "Можно ли подключить систему к аккумуляторам?",
+      a: "Да. Гибридные системы позволяют хранить энергию и обеспечивают автономность при отключениях электричества."
+    },
+    {
+      q: "Как часто нужно обслуживать панели?",
+      a: "Достаточно профилактической чистки и диагностики 1–2 раза в год, чтобы поддерживать максимальную эффективность работы."
+    }
+  ];
+
+  return (
+    <>
+      <section
+        className="hero"
+        id="hero"
+        style={{ fontFamily: "'Montserrat Alternates', sans-serif" }}
+      >
+        <div className="hero-overlay" />
+        <img src="/bg.jpg" className="hero-bg" alt="" />
+        <div className="hero-inner">
+          {/* HEADER */}
+          <header className={`hero-header ${isSticky ? "sticky" : ""}`}>
+            {/* Лого */}
+            <div className="hero-logo">
+              <img src="/logo.svg" alt="АНДРО" />
+            </div>
+
+            {/* Меню */}
+            <nav className="hero-nav">
+              <ul>
+                <li className={activeSection === "hero" ? "active" : ""} onClick={() => scrollToSection("hero")}>Главная</li>
+                <li className={activeSection === "about" ? "active" : ""} onClick={() => scrollToSection("about")}>О нас</li>
+                <li className={activeSection === "services" ? "active" : ""} onClick={() => scrollToSection("services")}>Сервисы</li>
+                <li className={activeSection === "portfolio" ? "active" : ""} onClick={() => scrollToSection("portfolio")}>Портфолио</li>
+                <li className={activeSection === "contacts" ? "active" : ""} onClick={() => scrollToSection("contacts")}>Контакты</li>
+                <li className={activeSection === "faq" ? "active" : ""} onClick={() => scrollToSection("faq")}>Вопросы</li>
+              </ul>
+            </nav>
+
+            {/* Соцсети */}
+            <div className="hero-socials">
+              <a href="https://www.instagram.com/andro.energy/" target="_blank" className="hero-social-circle">
+                <img src="/ig.svg" alt="Instagram" />
+              </a>
+              <a href="https://www.facebook.com/andro.energy/" target="_blank" className="hero-social-circle">
+                <img src="/fb.svg" alt="Facebook" />
+              </a>
+            </div>
+            <div className="burger" onClick={() => setMenuOpen(!menuOpen)}>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </header>
+          <div className={`mobile-menu ${menuOpen ? "active" : ""}`}>
+            {/* затемнение */}
+            <div
+              className="mobile-menu-overlay"
+              onClick={() => setMenuOpen(false)}
+            />
+
+            {/* панель меню */}
+            <div className="mobile-menu-panel">
+              <button
+                className="mobile-menu-close"
+                onClick={() => setMenuOpen(false)}
+                aria-label="Закрыть меню"
+              >
+                ×
+              </button>
+
+              <ul className="mobile-menu-list">
+                <li onClick={() => { scrollToSection("hero"); setMenuOpen(false); }}>
+                  Главная
+                </li>
+                <li onClick={() => { scrollToSection("about"); setMenuOpen(false); }}>
+                  О нас
+                </li>
+                <li onClick={() => { scrollToSection("services"); setMenuOpen(false); }}>
+                  Сервисы
+                </li>
+                <li onClick={() => { scrollToSection("portfolio"); setMenuOpen(false); }}>
+                  Портфолио
+                </li>
+                <li onClick={() => { scrollToSection("contacts"); setMenuOpen(false); }}>
+                  Контакты
+                </li>
+                <li onClick={() => { scrollToSection("faq"); setMenuOpen(false); }}>
+                  Вопросы
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* CONTENT */}
+          <div className="hero-content">
+            {/* ЛЕВАЯ ЧАСТЬ */}
+            <div className="hero-left">
+              <h1>
+                Переходите на солнечную
+                <br />
+                энергию и экономьте до 80%
+              </h1>
+
+              <div className="hero-buttons">
+                <button
+                  className="hero-btn hero-btn--primary"
+                  onClick={() => (window.location.href = "tel:+992000005477")}
+                >
+                  Позвонить
+                </button>
+                <button
+                  className="hero-btn hero-btn--secondary"
+                  onClick={() => (window.location.href = "https://wa.me/992000005477")}
+                >
+                  Написать
+                </button>
+              </div>
+            </div>
+
+            {/* ПРАВАЯ ЧАСТЬ — ФОРМА */}
+            <aside className="hero-form-card">
+              <h2>Оставьте заявку</h2>
+              <p>Мы подберём оптимальное решение под ваш объект</p>
+
+              <form onSubmit={handleSubmit}>
+                <input
+                  type="text"
+                  placeholder="ФИО *"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  required
+                />
+
+                <input
+                  type="tel"
+                  placeholder="+992 XXX XXX XXX *"
+                  value={phone}
+                  onChange={handlePhoneChange}
+                  required
+                />
+
+                <input type="email" placeholder="Электронная почта" />
+
+                <textarea placeholder="Сообщение" />
+
+                <button type="submit" className="hero-submit">
+                  Оставить заявку
+                </button>
+              </form>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      
+
+      {showModal && (
+        <div className="custom-modal">
+          <div className="custom-modal-content">
+             <h3>Ваша заявка принята!</h3>
+             <p>Наши операторы скоро с вами свяжутся.</p>
+             <button onClick={() => setShowModal(false)}>ОК</button>
+          </div>
+        </div>
+      )}
+      
+
+      {/* ABOUT SECTION */}
+      <section className="about" id="about">
+        <div className="about-container">
+          <h3 className="about-label">О нас</h3>
+
+          <p className="about-text">
+            Andro Energy — компания, которая уже 5 лет помогает домам и бизнесам Таджикистана
+            переходить на чистую солнечную энергию. Мы создаём современные, надёжные и доступные
+            решения, делая экологичное будущее ближе для каждого.
+          </p>
+
+          <div className="about-icons">
+            <div className="about-item">
+              <div className="about-icon">
+                <img src="/icons/1.svg" />
+              </div>
+              <h4>5 лет на рынке</h4>
+              <p>Работаем на рынке солнечной энергетики Таджикистана.</p>
+            </div>
+
+            <div className="about-item">
+              <div className="about-icon">
+                <img src="/icons/2.svg" />
+              </div>
+              <h4>Профессиональная команда</h4>
+              <p>Инженеры с практическим опытом и точными решениями.</p>
+            </div>
+
+            <div className="about-item">
+              <div className="about-icon">
+                <img src="/icons/3.svg" />
+              </div>
+              <h4>Гарантированное качество</h4>
+              <p>Используем сертифицированные и надёжные панели.</p>
+            </div>
+
+            <div className="about-item">
+              <div className="about-icon">
+                <img src="/icons/4.svg" />
+              </div>
+              <h4>Проекты под ключ</h4>
+              <p>Расчёт, монтаж и поддержка — всё в одном месте.</p>
+            </div>
+
+            <div className="about-item">
+              <div className="about-icon">
+                <img src="/icons/5.svg" />
+                
+              </div>
+              <h4>Доступные технологии</h4>
+              <p>Делаем солнечную энергию простой и эффективной.</p>
+            </div>
+          </div>
+          
+          {/* ABOUT AUTO SLIDESHOW */}
+          <div className="about-slideshow">
+            <img src={currentSlide} className="about-slide-img" alt="slide" />
+          </div>
+        </div>
+      </section>
+
+      {/* SERVICES SECTION */}
+      <section className="services" id="services">
+        <div className="services-container">
+          <h3 className="services-title">Сервисы</h3>
+          <p className="services-subtitle">
+            Мы сопровождаем ваш проект на каждом этапе — от оценки объекта
+            и проектирования до монтажа и постоянного мониторинга. Наша
+            команда обеспечивает стабильную работу системы и высокую
+            эффективность на долгие годы.
+          </p>
+
+          <div className="services-grid">
+            <div className="service-item">
+              <h4>01 — Проектирование</h4>
+              <p>
+                Мы детально оцениваем объект, изучаем освещённость, угол крыши
+                и потребление энергии, чтобы подобрать оптимальную солнечную
+                систему, полностью соответствующую вашим условиям.
+              </p>
+            </div>
+
+            <div className="service-item">
+              <h4>02 — Инженерия и дизайн</h4>
+              <p>
+                На основе собранных данных создаём индивидуальный проект,
+                который сочетает эффективность, надёжность и аккуратную
+                интеграцию в архитектуру вашего дома или бизнеса.
+              </p>
+            </div>
+
+            <div className="service-item">
+              <h4>03 — Монтаж и подключение</h4>
+              <p>
+                Наша команда выполняет установку профессионально и безопасно,
+                используя проверенные методы и оборудование, чтобы система
+                работала стабильно и достигала максимальной производительности.
+              </p>
+            </div>
+
+            <div className="service-item">
+              <h4>04 — Мониторинг и обслуживание</h4>
+              <p>
+                Мы отслеживаем работу системы, контролируем её продуктивность
+                и при необходимости проводим обслуживание, обеспечивая долгий
+                срок службы и стабильную эффективность.
+              </p>
+            </div>
+          </div>
+
+          <div className="services-images">
+            <img src="/photo/s1.png" alt="service-img-1" />
+            <img src="/photo/s2.png" alt="service-img-2" />
+            <img src="/photo/s3.png" alt="service-img-3" />
+            <img src="/photo/s4.png" alt="service-img-4" />
+          </div>
+        </div>
+      </section>
+
+      {/* PORTFOLIO SECTION */}
+      <section className="portfolio" id="portfolio">
+        <div className="portfolio-container">
+          <h3 className="portfolio-title">Наши проекты</h3>
+
+          <p className="portfolio-subtitle">
+            Здесь представлены выполненные установки солнечных систем для домов и бизнеса по
+            всему Таджикистану. Мы делимся реальными проектами, чтобы вы могли увидеть качество
+            работы Andro Energy и результаты, которые получают наши клиенты.
+          </p>
+
+          <div className="portfolio-slider-wrapper">
+            <div className="portfolio-track">
+              {portfolioPhotos.concat(portfolioPhotos).map((src, index) => (
+                <div className="portfolio-card" key={index}>
+                  <img src={src} alt={`Проект ${index + 1}`} />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="portfolio-progress">
+            <div className="portfolio-progress-bar" />
+          </div>
+        </div>
+      </section>
+
+      {/* CONTACTS SECTION */}
+      <section className="contacts" id="contacts">
+        <img src="/contacts.png" className="contacts-bg" alt="" />
+        <div className="contacts-overlay"></div>
+
+        <div className="contacts-inner">
+          <h3 className="contacts-title">Свяжитесь с нами</h3>
+          <p className="contacts-subtitle">
+            Мы всегда готовы помочь вам с выбором, расчётом и консультацией.
+            Оставьте заявку или напишите нам — команда Andro Energy ответит в ближайшее время.
+          </p>
+
+          <div className="contacts-main">
+
+            {/* CONTACT FORM — копия HERO */}
+            <div className="contacts-form-card">
+              <h2>Оставьте заявку</h2>
+              <p>Мы подберём оптимальное решение под ваш объект</p>
+
+              <form onSubmit={handleSubmit}>
+                <input
+                  type="text"
+                  placeholder="ФИО *"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  required
+                />
+
+                <input
+                  type="tel"
+                  placeholder="+992 XXX XXX XXX *"
+                  value={phone}
+                  onChange={handlePhoneChange}
+                  required
+                />
+
+                <input type="email" placeholder="Электронная почта" />
+                <textarea placeholder="Сообщение" />
+
+                <button type="submit" className="hero-submit">
+                  Оставить заявку
+                </button>
+              </form>
+            </div>
+
+            {/* REAL MAP IFRAME */}
+            <div className="contacts-map">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2955.6961613452283!2d68.787707!3d38.568009!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38d96f3634e5b977%3A0x2c023345d5ee3a24!2z0J_RgNC40L3QsNGPINGD0YHQtdC70L7Qs9C-LCDQotCw0YLQsNC70LjQsdCw0Y8g0J7RiA!5e0!3m2!1sru!2s!4v1700000000000"
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
+            </div>
+
+          </div>
+
+          <div className="contacts-bottom">
+            <a href="https://instagram.com/andro.energy" target="_blank" className="hero-social-circle">
+              <img src="/ig.svg" alt="Instagram" />
+            </a>
+            <a href="https://facebook.com/andro.energy" target="_blank" className="hero-social-circle">
+              <img src="/fb.svg" alt="Facebook" />
+            </a>
+            <a href="https://t.me/androenergy" target="_blank" className="hero-social-circle">
+              <img src="/tg.svg" alt="Telegram" />
+            </a>
+            <a
+              href="https://wa.me/992000005477"
+              target="_blank"
+              className="hero-social-circle"
+            >
+              <img src="/wa.svg" alt="WhatsApp" />
+            </a>
+            <a href="tel:+992000005477" className="contacts-phone">
+              <img src="/call.svg" alt="" />
+              <span>+992 000 005 477</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ SECTION */}
+      <section className="faq" id="faq">
+        <h3 className="faq-title">FAQ</h3>
+        <p className="faq-subtitle">
+          Мы собрали самые частые вопросы о солнечных панелях, чтобы упростить вам выбор и снять все
+          сомнения. Здесь вы найдёте быстрые, понятные ответы о сроке службы, установке, выгоде и
+          обслуживании систем.
+        </p>
+
+        <div className="faq-list">
+          {faqData.map((item, index) => (
+            <div className="faq-item" key={index}>
+              <div className="faq-question">
+                <span>{item.q}</span>
+                <button
+                  className="faq-toggle"
+                  onClick={() => {
+                    const answer = document.getElementById(`faq-answer-${index}`);
+                    answer.classList.toggle("open");
+                  }}
+                >
+                  +
+                </button>
+              </div>
+
+              <div className="faq-answer" id={`faq-answer-${index}`}>
+                {item.a}
+              </div>
+            </div>
+          ))}
+          
+        </div>
+      </section>
+      {/* FOOTER */}
+      <footer className="site-footer">
+        <div className="footer-top">
+          <div className="footer-logo">
+            <img src="/logo.svg" alt="Andro Energy" />
+          </div>
+
+          <nav className="footer-nav">
+            <ul>
+              <li onClick={() => scrollToSection("hero")}>Главная</li>
+              <li onClick={() => scrollToSection("about")}>О нас</li>
+              <li onClick={() => scrollToSection("services")}>Сервисы</li>
+              <li onClick={() => scrollToSection("portfolio")}>Портфолио</li>
+              <li onClick={() => scrollToSection("contacts")}>Контакты</li>
+              <li onClick={() => scrollToSection("faq")}>Вопросы</li>
+            </ul>
+          </nav>
+
+          <div className="footer-socials">
+            <a href="https://instagram.com/andro.energy" target="_blank" rel="noreferrer">
+              <img src="/ig.svg" alt="Instagram" />
+            </a>
+            <a href="https://facebook.com/andro.energy" target="_blank" rel="noreferrer">
+              <img src="/fb.svg" alt="Facebook" />
+            </a>
+            <a href="https://t.me/androenergy" target="_blank" rel="noreferrer">
+              <img src="/tg.svg" alt="Telegram" />
+            </a>
+            <a href="https://wa.me/992000005477" target="_blank" rel="noreferrer">
+              <img src="/wa.svg" alt="WhatsApp" />
+            </a>
+          </div>
+        </div>
+
+        <div className="footer-bottom">
+          <span>Andro Energy © 2025</span>
+          <span className="footer-slogan">
+            Солнечная энергия. Надёжность. Будущее.
+          </span>
+        </div>
+      </footer>
+    </>
+  );
+};
+
+export default Hero;
