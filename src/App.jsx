@@ -7,9 +7,24 @@ const Hero = () => {
 
 	// Hero carousel texts for each slide
 	const heroTexts = [
-		<>Солнечная энергия<br />для вашего дома<br />и бизнеса</>,
-		<>Переходите на<br />солнечную энергию<br />и экономьте до 80%</>,
-		<>Установка панелей<br />под ключ с гарантией<br />и обслуживанием</>
+		<>
+			Солнечная энергия
+			<br />
+			для вашего дома
+			<br />и бизнеса
+		</>,
+		<>
+			Переходите на
+			<br />
+			солнечную энергию
+			<br />и экономьте до 80%
+		</>,
+		<>
+			Установка панелей
+			<br />
+			под ключ с гарантией
+			<br />и обслуживанием
+		</>,
 	];
 
 	const [isSticky, setIsSticky] = React.useState(false);
@@ -66,7 +81,6 @@ const Hero = () => {
 			setShowScrollTop(current > 400);
 
 			// Check if in white section for burger color
-			const whiteSections = ["about", "services", "portfolio", "faq"];
 			const aboutEl = document.getElementById("about");
 			const faqEl = document.getElementById("faq");
 
